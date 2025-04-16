@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Galería Nesvecter</title>
+  <title>Galería NesVerter</title>
   <style>
     body {
       background: #111;
@@ -10,6 +10,7 @@
       text-align: center;
       font-family: sans-serif;
     }
+
     .gallery {
       display: flex;
       flex-wrap: wrap;
@@ -17,6 +18,7 @@
       justify-content: center;
       margin-top: 20px;
     }
+
     .thumbnail {
       width: 200px;
       border-radius: 10px;
@@ -27,19 +29,7 @@
     .thumbnail:hover {
       transform: scale(1.05);
     }
-    img {
-      width: 200px;
-      width: auto;      /* Mantener la proporción original */
-      height: auto;     /* Mantener la proporción original */
-      border-radius: 10px;
-      transition: 0.2s ease;
-      cursor: pointer;
-    }
-    img:hover {
-      transform: scale(1.05);
-    }
 
-    /* Estilo para la ventana emergente (lightbox) */
     .lightbox {
       display: none;
       position: fixed;
@@ -54,14 +44,13 @@
     }
 
     .lightbox img {
-      max-width: 95%;
-      max-height: 95%;
-      width: auto;      /* Mantener la proporción original */
-      height: auto;     /* Mantener la proporción original */
+      max-width: 95vw;
+      max-height: 95vh;
+      width: auto;
+      height: auto;
       border-radius: 10px;
     }
 
-    /* Cerrar la ventana emergente */
     .close-btn {
       position: absolute;
       top: 20px;
@@ -74,29 +63,54 @@
       border-radius: 50%;
     }
 
+    .nav-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background-color: rgba(255, 255, 255, 0.3);
+      border: none;
+      font-size: 40px;
+      padding: 10px 20px;
+      cursor: pointer;
+      color: white;
+      border-radius: 10px;
+    }
+
+    .nav-left {
+      left: 20px;
+    }
+
+    .nav-right {
+      right: 20px;
+    }
   </style>
 </head>
 <body>
-  <h1>Galería Nesvecter</h1>
+  <h1>Galería NesVerter</h1>
   <div class="gallery" id="gallery"></div>
 
-  <!-- Ventana emergente (lightbox) -->
   <div id="lightbox" class="lightbox">
     <button class="close-btn" onclick="closeLightbox()">✖</button>
+    <button class="nav-btn nav-left" onclick="showPrevious()">◀</button>
     <img id="lightbox-img" src="" alt="Imagen a pantalla completa">
+    <button class="nav-btn nav-right" onclick="showNext()">▶</button>
   </div>
 
   <script>
+    let imagenes = [];
+    let indiceActual = 0;
+
     fetch("imagenes.json")
       .then(res => res.json())
       .then(imgs => {
+        imagenes = imgs;
         const container = document.getElementById("gallery");
-        imgs.forEach(src => {
+        imgs.forEach((src, index) => {
           const img = document.createElement("img");
           img.src = src;
           img.alt = src;
           img.classList.add("thumbnail");
-          img.onclick = () => openLightbox(src); // Evento al hacer clic
+          img.onclick = () => openLightbox(index);
           container.appendChild(img);
         });
       })
@@ -104,18 +118,30 @@
         console.error("Error cargando imágenes:", err);
       });
 
-    // Función para abrir la imagen en pantalla completa
-    function openLightbox(src) {
+    function openLightbox(index) {
+      indiceActual = index;
       const lightbox = document.getElementById("lightbox");
       const lightboxImg = document.getElementById("lightbox-img");
-      lightboxImg.src = src;
+      lightboxImg.src = imagenes[indiceActual];
       lightbox.style.display = "flex";
     }
 
-    // Función para cerrar la ventana emergente
     function closeLightbox() {
-      const lightbox = document.getElementById("lightbox");
-      lightbox.style.display = "none";
+      document.getElementById("lightbox").style.display = "none";
+    }
+
+    function showPrevious() {
+      if (indiceActual > 0) {
+        indiceActual--;
+        document.getElementById("lightbox-img").src = imagenes[indiceActual];
+      }
+    }
+
+    function showNext() {
+      if (indiceActual < imagenes.length - 1) {
+        indiceActual++;
+        document.getElementById("lightbox-img").src = imagenes[indiceActual];
+      }
     }
   </script>
 </body>
