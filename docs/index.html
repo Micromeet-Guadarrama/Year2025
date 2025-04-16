@@ -2,17 +2,75 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Galería Nesvecters</title>
+  <title>Galería Nesvecter</title>
   <style>
-    body { background: #111; color: white; text-align: center; font-family: sans-serif; }
-    .gallery { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 20px; }
-    img { width: 200px; border-radius: 10px; transition: 0.2s ease; }
-    img:hover { transform: scale(1.05); }
+    body {
+      background: #111;
+      color: white;
+      text-align: center;
+      font-family: sans-serif;
+    }
+    .gallery {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      margin-top: 20px;
+    }
+    img {
+      width: 200px;
+      border-radius: 10px;
+      transition: 0.2s ease;
+      cursor: pointer;
+    }
+    img:hover {
+      transform: scale(1.05);
+    }
+
+    /* Estilo para la ventana emergente (lightbox) */
+    .lightbox {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.8);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .lightbox img {
+      max-width: 90%;
+      max-height: 90%;
+      border-radius: 10px;
+    }
+
+    /* Cerrar la ventana emergente */
+    .close-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background-color: rgba(255, 255, 255, 0.5);
+      border: none;
+      padding: 10px;
+      font-size: 20px;
+      cursor: pointer;
+      border-radius: 50%;
+    }
+
   </style>
 </head>
 <body>
   <h1>Galería</h1>
   <div class="gallery" id="gallery"></div>
+
+  <!-- Ventana emergente (lightbox) -->
+  <div id="lightbox" class="lightbox">
+    <button class="close-btn" onclick="closeLightbox()">✖</button>
+    <img id="lightbox-img" src="" alt="Imagen a pantalla completa">
+  </div>
 
   <script>
     fetch("imagenes.json")
@@ -23,13 +81,27 @@
           const img = document.createElement("img");
           img.src = src;
           img.alt = src;
+          img.onclick = () => openLightbox(src); // Evento al hacer clic
           container.appendChild(img);
         });
       })
       .catch(err => {
         console.error("Error cargando imágenes:", err);
       });
+
+    // Función para abrir la imagen en pantalla completa
+    function openLightbox(src) {
+      const lightbox = document.getElementById("lightbox");
+      const lightboxImg = document.getElementById("lightbox-img");
+      lightboxImg.src = src;
+      lightbox.style.display = "flex";
+    }
+
+    // Función para cerrar la ventana emergente
+    function closeLightbox() {
+      const lightbox = document.getElementById("lightbox");
+      lightbox.style.display = "none";
+    }
   </script>
 </body>
 </html>
-
