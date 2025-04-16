@@ -17,6 +17,16 @@
       justify-content: center;
       margin-top: 20px;
     }
+    .thumbnail {
+      width: 200px;
+      border-radius: 10px;
+      transition: 0.2s ease;
+      cursor: pointer;
+    }
+
+    .thumbnail:hover {
+      transform: scale(1.05);
+    }
     img {
       width: 200px;
       width: auto;      /* Mantener la proporción original */
@@ -85,6 +95,7 @@
           const img = document.createElement("img");
           img.src = src;
           img.alt = src;
+          img.classList.add("thumbnail");
           img.onclick = () => openLightbox(src); // Evento al hacer clic
           container.appendChild(img);
         });
